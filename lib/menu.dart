@@ -1,17 +1,87 @@
 import 'package:flutter/material.dart';
 
-class MyHomePage extends StatelessWidget {
-  MyHomePage({super.key});
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
 
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   final String npm = "2506620192";
   final String nama = "Alya Tsabita Imani";
   final String kelas = "PBP A";
 
+  // Menyimpan status login pengguna.
+  bool isLoggedIn = true;
+
   final List<ItemHomepage> items = [
     ItemHomepage("Lihat Proyek", Icons.folder, Colors.blue),
     ItemHomepage("Tambah Proyek", Icons.add_circle, Colors.green),
-    ItemHomepage("Logout", Icons.logout, Colors.red),
   ];
+
+  // Menampilkan dialog konfirmasi Login/Logout.
+  Future<void> showAuthDialog() async {
+    final action = isLoggedIn ? "logout" : "login";
+
+    final bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text("Konfirmasi $action"),
+          content: Text("Apakah kamu yakin ingin $action?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext, false);
+              },
+              child: const Text("Batal"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext, true);
+              },
+              child: Text("Ya, ${action == "logout" ? "Logout" : "Login"}"),
+            ),
+          ],
+        );
+      },
+    );
+
+    // Jika pengguna memilih Ya, ubah status login.
+    if (!mounted) return;
+    if (confirmed == true) {
+      setState(() {
+        isLoggedIn = !isLoggedIn;
+      });
+
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(isLoggedIn ? "Berhasil login" : "Berhasil logout"),
+          ),
+        );
+    }
+  }
+
+  // Menangani aksi setiap ItemCard.
+  void handleItemTap(ItemHomepage item) {
+    if (item.name == "Lihat Proyek") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!")),
+      );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ProjectPage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +127,21 @@ class MyHomePage extends StatelessWidget {
                     mainAxisSpacing: 10,
                     crossAxisCount: 3,
                     shrinkWrap: true,
-                    children: items.map((ItemHomepage item) {
-                      return ItemCard(item);
-                    }).toList(),
+                    children: [
+                      ...items.map((item) {
+                        return ItemCard(item, onTap: () => handleItemTap(item));
+                      }),
+
+                      // Tombol Login/Logout yang berubah sesuai status.
+                      ItemCard(
+                        ItemHomepage(
+                          isLoggedIn ? "Logout" : "Login",
+                          isLoggedIn ? Icons.logout : Icons.login,
+                          Colors.red,
+                        ),
+                        onTap: showAuthDialog,
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -106,8 +188,9 @@ class ItemHomepage {
 
 class ItemCard extends StatelessWidget {
   final ItemHomepage item;
+  final VoidCallback onTap;
 
-  const ItemCard(this.item, {super.key});
+  const ItemCard(this.item, {super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -115,30 +198,8 @@ class ItemCard extends StatelessWidget {
       color: item.color,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        onTap: () {
-          if (item.name == "Lihat Proyek") {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text("Kamu telah menekan tombol ${item.name}!"),
-                ),
-              );
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ProjectPage()),
-            );
-          } else {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text("Kamu telah menekan tombol ${item.name}!"),
-                ),
-              );
-          }
-        },
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.all(8),
           child: Center(
