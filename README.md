@@ -120,7 +120,7 @@ Menjelaskan penggunaan AI untuk membantu pengerjaan Tugas 7 dan memperdalam pema
 
 **Tools:** ChatGPT
 
-**Link:** [Masukkan link percakapan jika tersedia]
+**Link:** https://chatgpt.com/share/6af69920-72cc-83ec-959c-852b299bd1b3 
 
 **Penggunaan:**
 - Membantu memahami struktur proyek Flutter serta fungsi file seperti `main.dart` dan `menu.dart`.
