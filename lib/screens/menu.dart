@@ -1,4 +1,9 @@
+
 import 'package:flutter/material.dart';
+import 'package:myportofolio_mobile/widgets/left_drawer.dart';
+import 'package:myportofolio_mobile/widgets/project_card.dart';
+import 'package:myportofolio_mobile/models/item_homepage.dart';
+import 'package:myportofolio_mobile/screens/project_form.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -41,7 +46,9 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 Navigator.pop(dialogContext, true);
               },
-              child: Text("Ya, ${action == "logout" ? "Logout" : "Login"}"),
+              child: Text(
+                "Ya, ${action == "logout" ? "Logout" : "Login"}",
+              ),
             ),
           ],
         );
@@ -50,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Jika pengguna memilih Ya, ubah status login.
     if (!mounted) return;
+
     if (confirmed == true) {
       setState(() {
         isLoggedIn = !isLoggedIn;
@@ -59,7 +67,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ..hideCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
-            content: Text(isLoggedIn ? "Berhasil login" : "Berhasil logout"),
+            content: Text(
+              isLoggedIn ? "Berhasil login" : "Berhasil logout",
+            ),
           ),
         );
     }
@@ -67,18 +77,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Menangani aksi setiap ItemCard.
   void handleItemTap(ItemHomepage item) {
-    if (item.name == "Lihat Proyek") {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!")),
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text("Kamu telah menekan tombol ${item.name}!"),
+        ),
       );
 
+    if (item.name == "Lihat Proyek") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const ProjectPage()),
+        MaterialPageRoute(
+          builder: (context) => const ProjectPage(),
+        ),
       );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!")),
+    } else if (item.name == "Tambah Proyek") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ProjectFormPage(),
+        ),
       );
     }
   }
@@ -89,10 +108,15 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text(
           'MyPortfolio',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
+      drawer: const LeftDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -129,10 +153,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     shrinkWrap: true,
                     children: [
                       ...items.map((item) {
-                        return ItemCard(item, onTap: () => handleItemTap(item));
+                        return ItemCard(
+                          item,
+                          onTap: () => handleItemTap(item),
+                        );
                       }),
 
-                      // Tombol Login/Logout yang berubah sesuai status.
+                      // Tombol Login/Logout.
                       ItemCard(
                         ItemHomepage(
                           isLoggedIn ? "Logout" : "Login",
@@ -153,11 +180,16 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+// Widget untuk menampilkan informasi pengguna.
 class InfoCard extends StatelessWidget {
   final String title;
   final String content;
 
-  const InfoCard({super.key, required this.title, required this.content});
+  const InfoCard({
+    super.key,
+    required this.title,
+    required this.content,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +200,10 @@ class InfoCard extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8.0),
             Text(content),
           ],
@@ -178,51 +213,7 @@ class InfoCard extends StatelessWidget {
   }
 }
 
-class ItemHomepage {
-  final String name;
-  final IconData icon;
-  final Color color;
-
-  ItemHomepage(this.name, this.icon, this.color);
-}
-
-class ItemCard extends StatelessWidget {
-  final ItemHomepage item;
-  final VoidCallback onTap;
-
-  const ItemCard(this.item, {super.key, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: item.color,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(item.icon, color: Colors.white, size: 30.0),
-                const Padding(padding: EdgeInsets.all(3)),
-                Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Halaman untuk menampilkan daftar proyek
+// Halaman untuk menampilkan daftar proyek.
 class ProjectPage extends StatelessWidget {
   const ProjectPage({super.key});
 
@@ -232,26 +223,40 @@ class ProjectPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'My Projects',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
+      drawer: const LeftDrawer(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.folder_open, size: 80, color: Colors.grey[400]),
+            Icon(
+              Icons.folder_open,
+              size: 80,
+              color: Colors.grey[400],
+            ),
             const SizedBox(height: 16),
             const Text(
               'Belum ada proyek.',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               'Proyek yang kamu tambahkan akan muncul di sini.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
             ),
           ],
         ),
