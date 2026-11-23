@@ -20,9 +20,9 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isLoggedIn = true;
 
   final List<ItemHomepage> items = [
-    ItemHomepage("See Project", Icons.folder, Colors.blue),
+    ItemHomepage("View Project", Icons.folder, Colors.blue),
     ItemHomepage("Add Project", Icons.add_circle, Colors.cyan),
-    ItemHomepage("Add Experience", Icons.work_history, Colors.greenAccent),
+    ItemHomepage("Add Experience", Icons.add_circle, const Color.fromARGB(255, 78, 205, 144)),
   ];
 
   // Menampilkan dialog konfirmasi Login/Logout.
@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
         SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!")),
       );
 
-    if (item.name == "See Project") {
+    if (item.name == "View Project") {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const ProjectPage()),
@@ -109,60 +109,63 @@ class _MyHomePageState extends State<MyHomePage> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: const LeftDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InfoCard(title: 'NPM', content: npm),
-                InfoCard(title: 'Name', content: nama),
-                InfoCard(title: 'Class', content: kelas),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            Center(
-              child: Column(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16.0),
-                    child: Text(
-                      'Selamat datang di MyPortfolio Mobile!',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
-                      ),
-                    ),
-                  ),
-                  GridView.count(
-                    primary: true,
-                    padding: const EdgeInsets.all(20),
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    crossAxisCount: 3,
-                    shrinkWrap: true,
-                    children: [
-                      ...items.map((item) {
-                        return ItemCard(item, onTap: () => handleItemTap(item));
-                      }),
-
-                      // Tombol Login/Logout.
-                      ItemCard(
-                        ItemHomepage(
-                          isLoggedIn ? "Logout" : "Login",
-                          isLoggedIn ? Icons.logout : Icons.login,
-                          Colors.red,
-                        ),
-                        onTap: showAuthDialog,
-                      ),
-                    ],
-                  ),
+                  InfoCard(title: 'NPM', content: npm),
+                  InfoCard(title: 'Name', content: nama),
+                  InfoCard(title: 'Class', content: kelas),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 16.0),
+              Center(
+                child: Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(top: 16.0),
+                      child: Text(
+                        'Selamat datang di MyPortfolio Mobile!',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ),
+                    GridView.count(
+                      primary: false,
+                      padding: const EdgeInsets.all(20),
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      crossAxisCount: 3,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        ...items.map((item) {
+                          return ItemCard(item, onTap: () => handleItemTap(item));
+                        }),
+
+                        // Tombol Login/Logout.
+                        ItemCard(
+                          ItemHomepage(
+                            isLoggedIn ? "Logout" : "Login",
+                            isLoggedIn ? Icons.logout : Icons.login,
+                            Colors.red,
+                          ),
+                          onTap: showAuthDialog,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
