@@ -1,13 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 import 'package:myportofolio_mobile/widgets/project_card.dart';
 import 'package:myportofolio_mobile/models/item_homepage.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
+import 'package:myportofolio_mobile/screens/experience_form.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -21,8 +20,9 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isLoggedIn = true;
 
   final List<ItemHomepage> items = [
-    ItemHomepage("Lihat Proyek", Icons.folder, Colors.blue),
-    ItemHomepage("Tambah Proyek", Icons.add_circle, Colors.green),
+    ItemHomepage("See Project", Icons.folder, Colors.blue),
+    ItemHomepage("Add Project", Icons.add_circle, Colors.cyan),
+    ItemHomepage("Add Experience", Icons.work_history, Colors.greenAccent),
   ];
 
   // Menampilkan dialog konfirmasi Login/Logout.
@@ -46,9 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 Navigator.pop(dialogContext, true);
               },
-              child: Text(
-                "Ya, ${action == "logout" ? "Logout" : "Login"}",
-              ),
+              child: Text("Ya, ${action == "logout" ? "Logout" : "Login"}"),
             ),
           ],
         );
@@ -67,9 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ..hideCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
-            content: Text(
-              isLoggedIn ? "Berhasil login" : "Berhasil logout",
-            ),
+            content: Text(isLoggedIn ? "Berhasil login" : "Berhasil logout"),
           ),
         );
     }
@@ -80,24 +76,23 @@ class _MyHomePageState extends State<MyHomePage> {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        SnackBar(
-          content: Text("Kamu telah menekan tombol ${item.name}!"),
-        ),
+        SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!")),
       );
 
-    if (item.name == "Lihat Proyek") {
+    if (item.name == "See Project") {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => const ProjectPage(),
-        ),
+        MaterialPageRoute(builder: (context) => const ProjectPage()),
       );
-    } else if (item.name == "Tambah Proyek") {
+    } else if (item.name == "Add Project") {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => const ProjectFormPage(),
-        ),
+        MaterialPageRoute(builder: (context) => const ProjectFormPage()),
+      );
+    } else if (item.name == "Add Experience") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ExperienceFormPage()),
       );
     }
   }
@@ -108,10 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text(
           'MyPortfolio',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -153,10 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     shrinkWrap: true,
                     children: [
                       ...items.map((item) {
-                        return ItemCard(
-                          item,
-                          onTap: () => handleItemTap(item),
-                        );
+                        return ItemCard(item, onTap: () => handleItemTap(item));
                       }),
 
                       // Tombol Login/Logout.
@@ -185,11 +174,7 @@ class InfoCard extends StatelessWidget {
   final String title;
   final String content;
 
-  const InfoCard({
-    super.key,
-    required this.title,
-    required this.content,
-  });
+  const InfoCard({super.key, required this.title, required this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -200,10 +185,7 @@ class InfoCard extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+            Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
             Text(content),
           ],
@@ -223,10 +205,7 @@ class ProjectPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'My Projects',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -236,27 +215,17 @@ class ProjectPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.folder_open,
-              size: 80,
-              color: Colors.grey[400],
-            ),
+            Icon(Icons.folder_open, size: 80, color: Colors.grey[400]),
             const SizedBox(height: 16),
             const Text(
               'Belum ada proyek.',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               'Proyek yang kamu tambahkan akan muncul di sini.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             ),
           ],
         ),

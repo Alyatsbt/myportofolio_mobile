@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-// TODO: Impor drawer yang sudah dibuat sebelumnya
-
 class ProjectFormPage extends StatefulWidget {
   const ProjectFormPage({super.key});
 
@@ -33,7 +31,6 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
-      // TODO: Tambahkan drawer yang sudah dibuat di sini
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
