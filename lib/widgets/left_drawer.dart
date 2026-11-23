@@ -57,7 +57,7 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.work_history),
+            leading: const Icon(Icons.add_circle_outline),
             title: const Text('Add Experience'),
             onTap: () {
               Navigator.push(

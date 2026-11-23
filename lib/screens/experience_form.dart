@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 
@@ -11,7 +10,6 @@ class ExperienceFormPage extends StatefulWidget {
 }
 
 class _ExperienceFormPageState extends State<ExperienceFormPage> {
-  
   // === Form State & Controllers ===
   final _formKey = GlobalKey<FormState>();
   final _positionController = TextEditingController();
@@ -276,19 +274,14 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                 alignment: Alignment.bottomCenter,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                          Colors.indigo,
-                        ),
-                      ),
-                      onPressed: _showSummary,
-                      child: const Text(
-                        'Save',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.indigo),
+                    ),
+                    onPressed: _showSummary,
+                    child: const Text(
+                      'Save',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
