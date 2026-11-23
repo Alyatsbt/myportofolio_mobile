@@ -99,7 +99,7 @@ Aplikasi ini telah melalui pemeriksaan dengan hasil `No issues found!`.
 
 ### Progress Mingguan
 
-**Full commit history dapat dilihat pada repository Tutorial 08.**
+**Full commit history dapat dilihat pada repository Tugas 07.**
 
 - 11 November 2026:
   1. menyelesaikan tutorial 8 (basic flutter)
@@ -132,3 +132,51 @@ Menjelaskan penggunaan AI untuk membantu pengerjaan Tugas 7 dan memperdalam pema
 - Membantu memahami implementasi StatefulWidget, setState(), dan pengelolaan state untuk membuat tombol Login/Logout yang dinamis.
 
 AI membantu mempercepat proses pengerjaan, terutama dalam memahami konsep dasar Flutter dan mengatasi kendala teknis selama proses pengembangan. Namun, setiap implementasi tetap diperiksa dan diuji secara langsung melalui emulator untuk memastikan tampilan dan interaksi aplikasi berjalan sesuai dengan yang diharapkan.
+
+
+---
+
+# Tugas 8
+
+### Pertanyaan Reflektif
+
+1. Navigator.push() digunakan untuk membuka halaman baru di atas halaman saat ini, sehingga pengguna dapat kembali ke halaman sebelumnya. Navigator.pushReplacement() digunakan untuk mengganti halaman saat ini dengan halaman baru, sedangkan Navigator.pop() digunakan untuk menutup halaman aktif dan kembali ke halaman sebelumnya. Pada proyek ini, Navigator.push() digunakan untuk membuka formulir dari kartu aksi. Sementara itu, opsi Home pada Drawer menggunakan navigasi untuk mengarahkan pengguna kembali ke halaman utama.
+
+2. Scaffold menyediakan struktur dasar halaman, seperti AppBar, Drawer, dan body. AppBar berfungsi sebagai header, sedangkan Drawer menyediakan menu navigasi. Penggunaan struktur tersebut membantu menjaga layout antarhalaman tetap konsisten. Konsistensi juga diterapkan melalui penggunaan warna tema portfolio, misalnya warna utama yang digunakan pada AppBar halaman utama dan tombol pada halaman formulir.
+
+3. Layout formulir menggunakan susunan vertikal agar input dapat diisi secara berurutan dan mudah dipahami. SizedBox digunakan untuk mengatur jarak antar-komponen agar tampilan lebih rapi, sedangkan SingleChildScrollView memungkinkan pengguna menggulir formulir ketika seluruh komponen tidak muat pada layar, sehingga setiap field dan tombol tetap dapat diakses.
+
+4. GlobalKey<FormState> digunakan untuk mengakses state dan melakukan validasi pada form. validator berfungsi menentukan aturan validasi pada setiap input, sedangkan validate() menjalankan seluruh validator ketika tombol Save ditekan. Jika input tidak memenuhi aturan, proses penyimpanan tidak dilanjutkan dan pesan error akan ditampilkan. Contohnya, input kosong ditolak karena field wajib diisi. Pemilihan jenis input atau keyboard saja tidak cukup karena hanya membantu membatasi atau mempermudah input, tetapi tidak menjamin data yang dimasukkan telah memenuhi aturan validasi aplikasi.
+
+
+### Progress Mingguan
+
+**Full commit history dapat dilihat pada repository Tugas 08.**
+
+- **18 November 2026:**
+  1. Menyelesaikan Tutorial 9: Flutter Navigation, Layouts, Forms, and Navigation.
+
+- **23 November 2026:**
+  1. Mengimplementasikan form Experience untuk menambahkan data pengalaman pada portfolio.
+  2. Mengembangkan navigasi menuju form Experience dari halaman utama.
+  3. Merapikan struktur komponen form Experience dengan membaginya ke dalam beberapa section serta menyesuaikan styling.
+
+**### AI Disclosure**
+
+Menjelaskan penggunaan AI untuk membantu pengerjaan Tutorial 9 dan memperdalam pemahaman mengenai navigasi, layout, dan form pada Flutter.
+
+**Tools:** ChatGPT
+
+**Link:** https://chatgpt.com/share/6b03df75-240c-83ec-a46d-d64f5c85e70b 
+
+**Penggunaan:**
+- Membantu memahami konsep navigasi antarhalaman menggunakan `Navigator.push()`, `Navigator.pop()`, dan `Navigator.pushReplacement()`.
+- Menjelaskan penggunaan `Drawer` sebagai komponen navigasi serta implementasinya untuk berpindah halaman.
+- Membantu memahami susunan layout menggunakan widget seperti `Column`, `Row`, `Padding`, dan widget lainnya sesuai kebutuhan tampilan.
+- Menjelaskan implementasi form menggunakan `TextFormField`, `DropdownButtonFormField`, `GlobalKey<FormState>`, dan validator untuk memvalidasi input pengguna.
+- Membantu memahami penggunaan `AlertDialog` untuk menampilkan data yang telah dimasukkan melalui form.
+- Membantu merapikan struktur kode dan memisahkan komponen form ke dalam beberapa section agar lebih terorganisir dan mudah dipahami.
+
+AI digunakan sebagai sarana untuk membantu memahami konsep, memberikan arahan implementasi, serta mengatasi kendala selama pengembangan. Setiap implementasi kemudian diperiksa dan diuji secara langsung untuk memastikan aplikasi berjalan sesuai dengan yang diharapkan.
+
+
