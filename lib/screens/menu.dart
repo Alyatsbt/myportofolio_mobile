@@ -1,104 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:myportofolio_mobile/models/item_homepage.dart';
+import 'package:myportofolio_mobile/screens/experience_form.dart';
+import 'package:myportofolio_mobile/screens/login_screen.dart';
+import 'package:myportofolio_mobile/screens/project_form.dart';
+import 'package:myportofolio_mobile/screens/project_list_screen.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 import 'package:myportofolio_mobile/widgets/project_card.dart';
-import 'package:myportofolio_mobile/models/item_homepage.dart';
-import 'package:myportofolio_mobile/screens/project_form.dart';
-import 'package:myportofolio_mobile/screens/experience_form.dart';
+import 'package:provider/provider.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
+class MyHomePage extends StatelessWidget {
+  MyHomePage({super.key});
 
-class _MyHomePageState extends State<MyHomePage> {
-  final String npm = "2506620192";
-  final String nama = "Alya Tsabita Imani";
-  final String kelas = "PBP A";
-
-  // Menyimpan status login pengguna.
-  bool isLoggedIn = true;
+  final String npm = '2506620192';
+  final String nama = 'Alya Tsabita Imani';
+  final String kelas = 'PBP A';
 
   final List<ItemHomepage> items = [
-    ItemHomepage("View Project", Icons.folder, Colors.blue),
-    ItemHomepage("Add Project", Icons.add_circle, Colors.cyan),
-    ItemHomepage("Add Experience", Icons.add_circle, const Color.fromARGB(255, 78, 205, 144)),
+    ItemHomepage('View Projects', Icons.folder, Colors.blue),
+    ItemHomepage('Add Project', Icons.add_circle, Colors.cyan),
+    ItemHomepage(
+      'Add Experience',
+      Icons.add_circle,
+      const Color.fromARGB(255, 78, 205, 144),
+    ),
   ];
 
-  // Menampilkan dialog konfirmasi Login/Logout.
-  Future<void> showAuthDialog() async {
-    final action = isLoggedIn ? "logout" : "login";
-
-    final bool? confirmed = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: Text("Konfirmasi $action"),
-          content: Text("Apakah kamu yakin ingin $action?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext, false);
-              },
-              child: const Text("Batal"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext, true);
-              },
-              child: Text("Ya, ${action == "logout" ? "Logout" : "Login"}"),
-            ),
-          ],
-        );
-      },
-    );
-
-    // Jika pengguna memilih Ya, ubah status login.
-    if (!mounted) return;
-
-    if (confirmed == true) {
-      setState(() {
-        isLoggedIn = !isLoggedIn;
-      });
-
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text(isLoggedIn ? "Berhasil login" : "Berhasil logout"),
-          ),
-        );
+  Future<void> _handleItemTap(BuildContext context, ItemHomepage item) async {
+    final navigator = Navigator.of(context);
+    if (item.name == 'View Projects') {
+      await navigator.push<void>(
+        MaterialPageRoute<void>(builder: (_) => const ProjectListScreen()),
+      );
+    } else if (item.name == 'Add Project') {
+      if (!await ensureLoggedIn(context) || !context.mounted) return;
+      await navigator.push<void>(
+        MaterialPageRoute<void>(builder: (_) => const ProjectFormPage()),
+      );
+    } else if (item.name == 'Add Experience') {
+      await navigator.push<void>(
+        MaterialPageRoute<void>(builder: (_) => const ExperienceFormPage()),
+      );
     }
   }
 
-  // Menangani aksi setiap ItemCard.
-  void handleItemTap(ItemHomepage item) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!")),
-      );
-
-    if (item.name == "View Project") {
-      Navigator.push(
+  Future<void> _handleAuth(BuildContext context, bool isLoggedIn) async {
+    if (!isLoggedIn) {
+      await Navigator.push<bool>(
         context,
-        MaterialPageRoute(builder: (context) => const ProjectPage()),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
-    } else if (item.name == "Add Project") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const ProjectFormPage()),
-      );
-    } else if (item.name == "Add Experience") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const ExperienceFormPage()),
-      );
+      return;
+    }
+    try {
+      await context.read<AuthState>().logout();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Logout berhasil.')));
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Logout lokal berhasil, tetapi server tidak dapat dihubungi.',
+            ),
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoggedIn = context.watch<AuthState>().isLoggedIn;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -110,127 +86,74 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       drawer: const LeftDrawer(),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  InfoCard(title: 'NPM', content: npm),
-                  InfoCard(title: 'Name', content: nama),
-                  InfoCard(title: 'Class', content: kelas),
-                ],
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                InfoCard(title: 'NPM', content: npm),
+                InfoCard(title: 'Name', content: nama),
+                InfoCard(title: 'Class', content: kelas),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: Text(
+                'Selamat datang di MyPortfolio Mobile!',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16.0),
-              Center(
-                child: Column(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: 16.0),
-                      child: Text(
-                        'Selamat datang di MyPortfolio Mobile!',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0,
-                        ),
-                      ),
-                    ),
-                    GridView.count(
-                      primary: false,
-                      padding: const EdgeInsets.all(20),
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      crossAxisCount: 3,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                        ...items.map((item) {
-                          return ItemCard(item, onTap: () => handleItemTap(item));
-                        }),
-
-                        // Tombol Login/Logout.
-                        ItemCard(
-                          ItemHomepage(
-                            isLoggedIn ? "Logout" : "Login",
-                            isLoggedIn ? Icons.logout : Icons.login,
-                            Colors.red,
-                          ),
-                          onTap: showAuthDialog,
-                        ),
-                      ],
-                    ),
-                  ],
+            ),
+            GridView.count(
+              primary: false,
+              padding: const EdgeInsets.all(20),
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                for (final item in items)
+                  ItemCard(item, onTap: () => _handleItemTap(context, item)),
+                ItemCard(
+                  ItemHomepage(
+                    isLoggedIn ? 'Logout' : 'Login',
+                    isLoggedIn ? Icons.logout : Icons.login,
+                    Colors.red,
+                  ),
+                  onTap: () => _handleAuth(context, isLoggedIn),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-// Widget untuk menampilkan informasi pengguna.
 class InfoCard extends StatelessWidget {
+  const InfoCard({super.key, required this.title, required this.content});
+
   final String title;
   final String content;
 
-  const InfoCard({super.key, required this.title, required this.content});
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2.0,
-      child: Container(
-        width: MediaQuery.of(context).size.width / 3.5,
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8.0),
-            Text(content),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Halaman untuk menampilkan daftar proyek.
-class ProjectPage extends StatelessWidget {
-  const ProjectPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'My Projects',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      drawer: const LeftDrawer(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.folder_open, size: 80, color: Colors.grey[400]),
-            const SizedBox(height: 16),
-            const Text(
-              'Belum ada proyek.',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Proyek yang kamu tambahkan akan muncul di sini.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-            ),
-          ],
+    return Expanded(
+      child: Card(
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              Text(content, textAlign: TextAlign.center),
+            ],
+          ),
         ),
       ),
     );

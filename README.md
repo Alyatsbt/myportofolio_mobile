@@ -160,23 +160,3 @@ AI membantu mempercepat proses pengerjaan, terutama dalam memahami konsep dasar 
   1. Mengimplementasikan form Experience untuk menambahkan data pengalaman pada portfolio.
   2. Mengembangkan navigasi menuju form Experience dari halaman utama.
   3. Merapikan struktur komponen form Experience dengan membaginya ke dalam beberapa section serta menyesuaikan styling.
-
-**### AI Disclosure**
-
-Menjelaskan penggunaan AI untuk membantu pengerjaan Tutorial 9 dan memperdalam pemahaman mengenai navigasi, layout, dan form pada Flutter.
-
-**Tools:** ChatGPT
-
-**Link:** https://chatgpt.com/share/6b03df75-240c-83ec-a46d-d64f5c85e70b 
-
-**Penggunaan:**
-- Membantu memahami konsep navigasi antarhalaman menggunakan `Navigator.push()`, `Navigator.pop()`, dan `Navigator.pushReplacement()`.
-- Menjelaskan penggunaan `Drawer` sebagai komponen navigasi serta implementasinya untuk berpindah halaman.
-- Membantu memahami susunan layout menggunakan widget seperti `Column`, `Row`, `Padding`, dan widget lainnya sesuai kebutuhan tampilan.
-- Menjelaskan implementasi form menggunakan `TextFormField`, `DropdownButtonFormField`, `GlobalKey<FormState>`, dan validator untuk memvalidasi input pengguna.
-- Membantu memahami penggunaan `AlertDialog` untuk menampilkan data yang telah dimasukkan melalui form.
-- Membantu merapikan struktur kode dan memisahkan komponen form ke dalam beberapa section agar lebih terorganisir dan mudah dipahami.
-
-AI digunakan sebagai sarana untuk membantu memahami konsep, memberikan arahan implementasi, serta mengatasi kendala selama pengembangan. Setiap implementasi kemudian diperiksa dan diuji secara langsung untuk memastikan aplikasi berjalan sesuai dengan yang diharapkan.
-
-

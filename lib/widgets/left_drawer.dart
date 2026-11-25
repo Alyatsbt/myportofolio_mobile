@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:myportofolio_mobile/screens/menu.dart';
-import 'package:myportofolio_mobile/screens/project_form.dart';
 import 'package:myportofolio_mobile/screens/experience_form.dart';
+import 'package:myportofolio_mobile/screens/login_screen.dart';
+import 'package:myportofolio_mobile/screens/project_form.dart';
+import 'package:myportofolio_mobile/screens/project_list_screen.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
+import 'package:provider/provider.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isLoggedIn = context.watch<AuthState>().isLoggedIn;
+    final navigator = Navigator.of(context);
+
+    void open(Widget page) {
+      navigator.pop();
+      navigator.push(MaterialPageRoute<void>(builder: (_) => page));
+    }
+
     return Drawer(
       child: ListView(
         children: [
@@ -35,37 +47,56 @@ class LeftDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.home_outlined),
             title: const Text('Home'),
-            // Navigasi ke halaman utama portofolio
             onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => MyHomePage()),
-              );
+              navigator.pop();
+              navigator.popUntil((route) => route.isFirst);
             },
+          ),
+          ListTile(
+            leading: const Icon(Icons.folder_outlined),
+            title: const Text('View Projects'),
+            onTap: () => open(const ProjectListScreen()),
           ),
           ListTile(
             leading: const Icon(Icons.add_circle_outline),
             title: const Text('Add Project'),
-            // Navigasi ke halaman tambah proyek
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ProjectFormPage(),
-                ),
-              );
+            onTap: () async {
+              if (!await ensureLoggedIn(context) || !context.mounted) return;
+              open(const ProjectFormPage());
             },
           ),
           ListTile(
-            leading: const Icon(Icons.add_circle_outline),
+            leading: const Icon(Icons.work_outline),
             title: const Text('Add Experience'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ExperienceFormPage(),
-                ),
-              );
+            onTap: () => open(const ExperienceFormPage()),
+          ),
+          const Divider(),
+          ListTile(
+            leading: Icon(isLoggedIn ? Icons.logout : Icons.login),
+            title: Text(isLoggedIn ? 'Logout' : 'Login'),
+            onTap: () async {
+              if (!isLoggedIn) {
+                open(const LoginScreen());
+                return;
+              }
+              try {
+                await context.read<AuthState>().logout();
+                if (!context.mounted) return;
+                navigator.pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Logout berhasil.')),
+                );
+              } catch (_) {
+                if (!context.mounted) return;
+                navigator.pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Token lokal dihapus; server tidak dapat dihubungi.',
+                    ),
+                  ),
+                );
+              }
             },
           ),
         ],
